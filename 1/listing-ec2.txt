@@ -1,0 +1,120 @@
+aws configure
+// using the aws_access_key_id and the aws_secret_access_key from the account details
+// using the us-east-1 region and the default output value (which is json)
+aws ec2 run-instances --image-id ami-00eb20669e0990cb4 --count 1 --instance-type t2.micro --key-name ivans_aws_key --security-group-ids sg-1bfb9749 --subnet-id subnet-25a9a90b
+// using the ami-id of the Amazon Linux VM and the key_pair, the security-group-id and the subnet-id that we either just read or had to generate from the EC2 Dashboard
+// after running the instance we get the following output:
+{
+    "Groups": [],
+    "Instances": [
+        {
+            "AmiLaunchIndex": 0,
+            "ImageId": "ami-00eb20669e0990cb4",
+            "InstanceId": "i-06694ec0719aaf985",
+            "InstanceType": "t2.micro",
+            "KeyName": "ivans_aws_key",
+            "LaunchTime": "2019-11-12T17:53:06.000Z",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-east-1c",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-80-85.ec2.internal",
+            "PrivateIpAddress": "172.31.80.85",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-25a9a90b",
+            "VpcId": "vpc-e3782999",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "",
+            "EbsOptimized": false,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2019-11-12T17:53:06.000Z",
+                        "AttachmentId": "eni-attach-06ff724a17b763d07",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching"
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "default",
+                            "GroupId": "sg-1bfb9749"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "12:03:25:b6:fa:fd",
+                    "NetworkInterfaceId": "eni-0b021a4948e9e5d51",
+                    "OwnerId": "710756896849",
+                    "PrivateDnsName": "ip-172-31-80-85.ec2.internal",
+                    "PrivateIpAddress": "172.31.80.85",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-80-85.ec2.internal",
+                            "PrivateIpAddress": "172.31.80.85"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-25a9a90b",
+                    "VpcId": "vpc-e3782999"
+                }
+            ],
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "default",
+                    "GroupId": "sg-1bfb9749"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 1
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            }
+        }
+    ],
+    "OwnerId": "710756896849",
+    "ReservationId": "r-0d4f4b27dc4f7ebe4"
+}
+
+// then we stop the instance using the instance-id of the one currently running linux machine (the instance-id is listed in the json output from before)
+aws ec2 stop-instances --instance-ids i-06694ec0719aaf985
+// stopping the instance return the following output
+{
+    "StoppingInstances": [
+        {
+            "CurrentState": {
+                "Code": 64,
+                "Name": "stopping"
+            },
+            "InstanceId": "i-06694ec0719aaf985",
+            "PreviousState": {
+                "Code": 16,
+                "Name": "running"
+            }
+        }
+    ]
+}
