@@ -4,16 +4,19 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import subprocess
 import csv
 import time
+import datetime
 
 benchmarks = ['disk-sequential-write', 'disk-sequential-read', 'cpu', 'mem', 'disk-random-write', 'disk-random-read']
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', hours=2)
+@sched.scheduled_job('interval', start_date=datetime.datetime.now() + datetime.timedelta(0,5), hours=2)
 def run_benchmarks():
 	for benchmark in benchmarks:
+		print(str(datetime.datetime.now().time()) + ' running ' +  benchmark + '-benchmark ...')
 		current_time = int(time.time())
 		result = subprocess.run(['./measure-' + benchmark + '.sh'], stdout=subprocess.PIPE)
+		print(str(datetime.datetime.now().time()) + ' finished ' + benchmark + '-benchmark with score of: ' + result.stdout.decode('utf-8'))
 		with open(benchmark + '.csv', mode='a') as out_file:
 			out_writer = csv.writer(out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 			out_writer.writerow([current_time, float(result.stdout.decode('utf-8'))])
