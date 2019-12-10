@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import subprocess
+import csv
+import time
+import sys
+
+benchmarks = ['cpu', 'mem', 'disk-random-write', 'nginx', 'forksum']
+
+def run_benchmarks():
+	for benchmark in benchmarks:
+		current_time = int(time.time())
+		if(benchmark == 'nginx'):
+			result = subprocess.run(['./measure-' + benchmark + '.sh', sys.argv[1]], stdout=subprocess.PIPE)
+		else:
+			result = subprocess.run(['./measure-' + benchmark + '.sh'], stdout=subprocess.PIPE)
+		with open(benchmark + '.csv', mode='a') as out_file:
+			out_writer = csv.writer(out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+			out_writer.writerow([current_time, float(result.stdout.decode('utf-8'))])
+
+for i in xrange(1,48):
+	run_benchmarks()
