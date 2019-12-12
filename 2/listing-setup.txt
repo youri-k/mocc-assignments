@@ -22,6 +22,7 @@ qemu-img create -f qcow2 virtualdebian.img 30G
 
 // Schritt 5: Emulate Opening The Debian ISO File As a CD-ROM/DVD Drive And Install Debian In The Virtual Machine
 kvm -hda virtualdebian.img -cdrom debian-9.6.0-amd64-xfce-CD-1.iso -m 2048 -net nic -net user -soundhw all
+-> hier haben wir in der Konfiguration das Desktop User Interface installiert
 
 // Schritt 6: Run Virtual Machine with Network-Forwarding to enable SSH over localhost
 kvm -hda virtualdebian.img -m 1024 -soundhw all -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22
@@ -44,3 +45,10 @@ curl -o ~/Downloads -s -w '%{time_total}#' localhost/very_big_file.txt
 
 // Installation
 sudo apt-get install docker.io
+
+// create Docker image from Dockerfile
+sudo docker build -f [cpu, mem, disk-random, fork].Dockerfile .
+
+// run Docker Container with a shared folder to exchange files 
+sudo docker run -v ~/Downloads/docker:/app 454e6aa0f73b
+
