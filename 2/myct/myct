@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+import argparse
+import os
+
+def init():
+	subprocess.run(['./init.sh', sys.argv[2]])
+
+def run():
+	parser = argparse.ArgumentParser()
+
+	parser.add_argument('type', type=str)
+	parser.add_argument('container_path', type=str)
+	parser.add_argument('--namespace', type=str)
+	parser.add_argument('--limit', type=str)
+	parser.add_argument('executable', type=str)
+	parsed_args, otherthings = parser.parse_known_args()
+
+	if(parsed_args.namespace == None and parsed_args.limit == None):
+		subprocess.run(['unshare', '--mount', '--uts', '--ipc', '--net', '--pid', '--fork', '--user', '--map-root-user', 'chroot', parsed_args.container_path, parsed_args.executable])
+	elif (parsed_args.limit == None):
+		namespaces = parsed_args.namespace.split('=')
+		subprocess.run(['nsenter', '--target', namespaces[1], '--' + namespaces[0], 'chroot', os.path.abspath(parsed_args.container_path), parsed_args.executable])
+	else:
+		arguments = parsed_args.limit.split('=')
+		cgroup = arguments[0].split('.')
+		pid = str(os.getpid())
+		base_path = '/sys/fs/cgroup/' + cgroup[0] + '/' + pid 
+		os.mkdir(base_path)
+		f = open(base_path + '/' + arguments[0], "w")
+		f.write(arguments[1])
+		f.close()
+		f = open(base_path + '/cgroup.procs', "w")
+		f.write(pid)
+		f.close()
+		f = open(base_path + '/tasks', "w")
+		f.write(pid)
+		f.close()
+		
+		if(parsed_args.namespace == None):
+			subprocess.run(['unshare', '--mount', '--uts', '--ipc', '--net', '--pid', '--fork', '--user', '--map-root-user', 'chroot', parsed_args.container_path, parsed_args.executable])
+		else:
+			namespaces = parsed_args.namespace.split('=')
+			subprocess.run(['nsenter', '--target', namespaces[1], '--' + namespaces[0], 'chroot', os.path.abspath(parsed_args.container_path), parsed_args.executable])
+			
+def mount():
+	subprocess.run(['./map.sh', sys.argv[2], sys.argv[3], sys.argv[4]]) 
+
+commands = {
+	'init': init,
+	'run': run,
+	'map': mount
+}
+
+commands[sys.argv[1]]()
