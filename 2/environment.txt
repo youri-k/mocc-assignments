@@ -1,0 +1,63 @@
+--- system info (from Settings->Details->About) ---
+
+host OS: Ubuntu 19.04
+guest OS: Debian 10.2
+cpu: Intel® Core™ i5-4210M CPU @ 2.60GHz × 4 
+memory: 7,7 GiB
+GNOME 3.32.1
+64-bit system
+
+--- software versions ---
+
+fio-3.12
+Python 3.7.3
+gcc (Ubuntu 9.1.0-2ubuntu2~19.04) 9.1.0
+Docker version 18.09.7
+nginx version: nginx/1.15.9
+QEMU emulator version 3.1.0 (Debian 1:3.1+dfsg-2ubuntu3.7)
+
+--- cpu info (from proc/cpuinfo) ---
+
+processor	: 0
+model name	: Intel(R) Core(TM) i5-4210M CPU @ 2.60GHz
+stepping	: 3
+cpu MHz		: 3032.866
+cache size	: 3072 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 2
+
+processor	: 1
+model name	: Intel(R) Core(TM) i5-4210M CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0x27
+cpu MHz		: 3047.506
+cache size	: 3072 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 2
+
+processor	: 2
+model name	: Intel(R) Core(TM) i5-4210M CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0x27
+cpu MHz		: 3026.364
+cache size	: 3072 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 2
+
+processor	: 3
+model name	: Intel(R) Core(TM) i5-4210M CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0x27
+cpu MHz		: 3026.914
+cache size	: 3072 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 2
+
