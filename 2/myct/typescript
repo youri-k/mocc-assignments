@@ -1,0 +1,20 @@
+// This commands downloads a new debian system and initializes a container in the folder mocc-container
+y@g: ~/uni/mocc/assignments/2/myct sudo ./myct init mocc-container
+I: Base system installed successfully.
+
+// Compile the test program and move into container
+y@g: ~/uni/mocc/assignments/2/myct$ gcc limit.c -o limit
+y@g: ~/uni/mocc/assignments/2/myct$ sudo mv limit mocc-container/home/
+
+// Run a bash in the container with memory limit
+y@g: ~/uni/mocc/assignments/2/myct$ sudo ./myct run mocc-container/ --limit memory.limit_in_bytes=1000000 /bin/bash
+
+// We're now inside the container and look for the test program
+root@g:/# cd home/
+
+// The test program tries to iteratively allocate more and more memory until allocation fails.
+root@g:/home# ./limit 
+Malloc failed
+
+// We exit the container.
+root@g:/home# exit
