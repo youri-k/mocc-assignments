@@ -1,34 +1,31 @@
-### cpu benchmark ###
+### cpu benchmark ### (misst KFlOPS)
 
 1. Wir erwarten, dass der Native Host am schnellsten durchläuft, gefolgt vom Docker-Container, da wir auf einem Linux Host System sind und dementsprechend der Linux Kernel direkt genutzt wird (ohne wirklichen Overhead).
 Danach erwarten wir die Virtual Machine mit KVM, da bei der Hardware-unterstützte Virtualisierung die Anzahl der Eingriffe des Hypervisors um syscalls zu handeln entscheidend runtergeht. Am langsamsten läuft also die QEMU Instanz.
 
-In der Qemu-VM messen wir wesentlich geringere Werte
-Wir haben die höchsten Peaks tatsächlich auf dem Native Host gemessen, allerdings hat dieser über große Zeiträume bessere Performance als KVM und Docker.
+In der Qemu-VM messen wir eine viel kleinere Anzahl an FLOPS (um einen wesentlichen Faktor), was zu erwarten war.
+Wir haben die höchsten Peaks tatsächlich auf dem Native Host gemessen, allerdings hat dieser über große Zeiträume ein bisschen weniger FLOPS als KVM und Docker, welche nah beieinander liegen. Dies sind aber höchst wahrscheinlich zu vernachlässigende Messfehler.
 
-messen wir echt die Zeit?
-
-### memory benchmark ###
+### memory benchmark ### (misst execution time)
 
 1. Wir erwarten, dass der Native Host am schnellsten durchläuft, gefolgt vom Docker-Container, da wir auf einem Linux Host System sind und dementsprechend der Linux Kernel direkt genutzt wird (ohne wirklichen Overhead).
 Danach erwarten wir die Virtual Machine mit KVM, da bei der Hardware-unterstützte Virtualisierung die Anzahl der Eingriffe des Hypervisors um syscalls zu handeln entscheidend runtergeht. Am langsamsten läuft also die QEMU Instanz.
 
-Unsere Erwartungen haben sich bestätigt, mit der Ausnahme, dass wir sehr überrascht darüber waren, wie viel langsamer Qemu ist, wenn es ohne KVM ausgeführt wird. Hardware-Virtualisierung ist schon ein enorm großer Performance-Boost.
+Unsere Erwartungen haben sich bestätigt. Wir waren zudem sehr überrascht darüber, wie viel langsamer Qemu ist, wenn es ohne KVM ausgeführt wird. Hardware-Virtualisierung ist schon ein enorm großer Performance-Boost.
 
-### disk benchmark ###
+### disk benchmark ### (misst KiB/s)
 
 1. Wir erwarten, dass der Native Host am schnellsten durchläuft, gefolgt vom Docker-Container, da wir auf einem Linux Host System sind und dementsprechend der Linux Kernel direkt genutzt wird (ohne wirklichen Overhead, außer um die Isolation sicherzustellen).
 Danach erwarten wir die Virtual Machine mit KVM, da bei der Hardware-unterstützte Virtualisierung die Anzahl der Eingriffe des Hypervisors um syscalls zu handeln entscheidend runtergeht. Am langsamsten läuft also die QEMU Instanz.
 
-Hier sehen wir wieder die erwartete Hierarchie von Native -> Docker -> VM (Qemu) 
-Was allerdings heraussticht, ist, dass diesmal die KVM-Maschine wesentlich langsamer war (auch viel langsamer als Qemu ohne Hardware-Beschleunigung).
-An dieser Stelle vermuten wir "falsche"/schlechte Konfigurationen unseres Harddisk-Devices auf der VM, in Kombination mit einer Optimierung, die auf KVM nicht zum tragen kommt.
-https://serverfault.com/questions/665309/extremely-slow-disk-io-in-qemu-kvm-vm
+Am besten hat anscheinend KVM performed, gefolgt von Qemu (Dies liegt möglichweise ann der Art und Weise, wie die Harddisk-Devices virtualisiert werden.)
+Außerdem ist Docker ein wenig besser (mehr KiB/s) als der Native Host, welcher den letzten Platz belegt, was äußerst ungewöhnlich ist, aber damit zu erklären wäre, dass wir bei der Konfiguration der VM diese so eingestellt haben, dass die Festplatte nicht wirklich als solche (im klassischen Sinne) virtualisiert wird. Vielleicht liegt diese bei den VMs vollständig im RAM oder ähnliches...
 
 2. Wir haben nicht explizit ein Disk Format angegeben, was bedeutet, dass Qemu per default raw für uns ausgewählt hat. 
 https://unix.stackexchange.com/questions/276480/booting-a-raw-disk-image-in-qemu
+Dies spielt sicherlich eine entscheidende Rolle bzgl. der Ergebnisse, die wir gesammelt haben, welche aber nicht unseren Erwartungen entsprechen.
 
-### fork benchmark ###
+### fork benchmark ### (misst execution time)
 
 1. Wir erwarten, dass der Native Host am schnellsten durchläuft, gefolgt vom Docker-Container, da wir auf einem Linux Host System sind und dementsprechend der Linux Kernel direkt genutzt wird (ohne wirklichen Overhead, außer um die Isolation sicherzustellen).
 Danach erwarten wir die Virtual Machine mit KVM, da bei der Hardware-unterstützte Virtualisierung die Anzahl der Eingriffe des Hypervisors um syscalls zu handeln entscheidend runtergeht. Am langsamsten läuft also die QEMU Instanz.
